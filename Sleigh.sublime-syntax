@@ -1,0 +1,51 @@
+%YAML 1.2
+---
+# See http://www.sublimetext.com/docs/3/syntax.html
+file_extensions:
+  - .slapec
+scope: source.sleigh
+
+
+variables:
+  label: '\b[a-zA-Z][a-zA-Z0-9_]*\b'
+
+contexts:
+  main:
+    - match: '#'
+      scope: punctuation.definition.comment.source.sleigh
+      push: line_comment
+    - match: \bmacro\b
+      scope: keyword.control.c
+      set: [macro_name]
+    - match: '\b(define|attach|undef|elif|instruction|const|unique|inst_start|inst_next|epsilon|else|endif|ifdef|variables|token|register|space|ram|default|include|export|if|goto|define|macro|is|local)\b'
+      scope: keyword.control.source.sleigh
+    - match: '\b(-)?[0-9.]+\b'
+      scope: constant.numeric.source.sleigh
+    - match: \w+\s*(?=\()
+      scope: variable.function.source.sleigh
+    - match: '^:({{label}})?'
+      scope: entity.name.function.source.sleigh
+    - match: '^({{label}})+:'
+      scope: entity.name.function.source.sleigh
+    - match: '"'
+      scope: string.quoted.double.source.sleigh
+      push: quoted_string
+
+
+
+  quoted_string:
+    - meta_scope: string.quoted.double.source.sleigh
+    - match: '"'
+      pop: true
+
+
+  line_comment:
+      - meta_scope: comment.line.source.sleigh
+      - match: $
+        pop: true
+
+  macro_name:
+    - meta_scope: variable.function.type
+    - match: \b[A-Za-z_][A-Za-z_0-9]*\b
+      pop: true
+
